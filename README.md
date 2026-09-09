@@ -24,9 +24,8 @@ La API devuelve dos valores:
 
 * `segment`: segmento de cliente asignado por KMeans.
 * `prediction`:
-
-  * `0` → el cliente **no contratará** el producto.
-  * `1` → el cliente **contratará** el producto.
+       * `0` → el cliente **no contratará** el producto.
+       * `1` → el cliente **contratará** el producto.
 
 ---
 
@@ -37,9 +36,10 @@ Despliegue_modelo_TC/
 │
 ├── app/
 │   ├── model/
-│   │   ├── kmeans_segmentacion.pkl
-│   │   ├── model_bank_marketing.pkl
+│   │   ├── __init__.py
 │   │   ├── predictor.py
+│   │   ├── model_bank_marketing.pkl
+│   │   ├── kmeans_segmentacion.pkl
 │   │   └── scaler_segmentacion.pkl
 │   │
 │   ├── utils/
@@ -51,7 +51,8 @@ Despliegue_modelo_TC/
 │
 ├── README.md
 ├── requirements.txt
-└── render.yaml
+├── runtime.txt
+└── .gitignore
 ```
 
 ---
@@ -60,6 +61,7 @@ Despliegue_modelo_TC/
 
 * Python
 * Flask
+* Catboost
 * Gunicorn
 * Pandas
 * NumPy
@@ -73,7 +75,7 @@ Despliegue_modelo_TC/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/MHHsim/Despliegue_modelo_TC.git
 cd Despliegue_modelo_TC
 ```
 
@@ -269,32 +271,12 @@ Una vez realizado el despliegue, Render proporcionará una URL pública desde la
 
 ---
 
-## Dependencias
-
-Las principales dependencias utilizadas en el proyecto son:
-
-```text
-Flask
-Gunicorn
-Pandas
-NumPy
-Scikit-learn
-```
-
-Estas dependencias deben estar incluidas en el archivo:
-
-```text
-requirements.txt
-```
-
----
-
 ## Autores
 
 ### Claudia
 
-* GitHub: *pendiente de añadir*
-* LinkedIn: *pendiente de añadir*
+* GitHub: https://github.com/claudiafranzoni
+* LinkedIn: https://www.linkedin.com/in/claudia-franzoni-800529196/
 
 ### Marta Harana Herrera
 
