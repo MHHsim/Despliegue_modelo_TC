@@ -6,6 +6,7 @@ La API recibe información de un cliente, realiza el procesamiento necesario, as
 
 ---
 
+
 ## Descripción del proyecto
 
 La API realiza las siguientes operaciones:
@@ -125,6 +126,24 @@ http://127.0.0.1:5000
 
 ---
 
+## Flujo de trabajo con Git (Git Flow)
+
+El proyecto sigue un flujo de ramas estructurado:
+
+| Rama | Propósito |
+|------|-----------|
+| `main` | Código en producción. Solo recibe cambios vía Pull Request. |
+| `develop` | Integración de funcionalidades antes de pasar a producción. |
+| `feature/nombre` | Desarrollo de una funcionalidad concreta. |
+
+---
+
+## Mantenimiento en producción
+
+El plan gratuito de Render duerme la aplicación tras 15 minutos de inactividad. Para evitarlo, se configuró un cron job externo ([cron-job.org](https://cron-job.org)) que realiza una petición `GET` a la URL principal cada 14 minutos.
+
+---
+
 ## Endpoints
 
 ### POST `/predict`
@@ -232,6 +251,19 @@ Modelo de clasificación
        │
        ▼
 Respuesta JSON
+```
+
+### GET `/retrain`
+
+Endpoint preparado para demostrar el flujo completo de CI/CD: se mantiene comentado en `main` y se activa mediante un Pull Request desde una rama `feature/` durante la presentación, disparando un redespliegue en Render.
+
+#### Ejemplo de respuesta
+
+```json
+{
+  "status": "Éxito",
+  "message": "Redespliegue en directo completado y modelo actualizado."
+}
 ```
 
 ### Modelos utilizados
