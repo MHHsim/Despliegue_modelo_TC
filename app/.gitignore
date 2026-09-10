@@ -1,4 +1,23 @@
-__pycache__/
-*.pyc
+# Entornos virtuales
 venv/
+.venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE
+.vscode/
+.idea/
+
+# Variables de entorno
 .env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Archivos temporales
+*.log
