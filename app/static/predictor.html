@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="title">Predicción de Depósito a Plazo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0e2033;
+    --ink-soft: #33475b;
+    --ink-faint: #6b7c8d;
+    --teal: #0d6b63;
+    --teal-dark: #094f49;
+    --teal-tint: #e6f1ef;
+    --paper: #f6f7f5;
+    --paper-2: #ffffff;
+    --hairline: #d3d9dd;
+    --hairline-strong: #b6bfc6;
+    --danger: #9e2b25;
+    --danger-tint: #f7e7e5;
+    --ok: #0d6b63;
+    --serif: "Source Serif 4", Georgia, serif;
+    --sans: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .sheet {
+    max-width: 940px;
+    margin: 0 auto;
+    background: var(--paper-2);
+    border-left: 1px solid var(--hairline);
+    border-right: 1px solid var(--hairline);
+    min-height: 100vh;
+  }
+
+  /* ---------- Header ---------- */
+  .masthead {
+    padding: 34px 44px 22px;
+    border-bottom: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .masthead .brand-eyebrow {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--teal);
+    font-weight: 600;
+    text-transform: none;
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand-eyebrow::before {
+    content: "";
+    width: 22px;
+    height: 2px;
+    background: var(--teal);
+    display: inline-block;
+  }
+
+  .masthead h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .masthead .tagline {
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+    max-width: 46ch;
+  }
+
+  /* ---------- Language selector ---------- */
+  .lang {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--hairline-strong);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .lang .lang-label {
+    font-size: 12px;
+    color: var(--ink-faint);
+    padding: 0 10px;
+    border-right: 1px solid var(--hairline);
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    background: var(--paper);
+  }
+  .lang button {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 7px 14px;
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .lang button + button { border-left: 1px solid var(--hairline); }
+  .lang button.active { background: var(--ink); color: #fff; }
+  .lang button:not(.active):hover { background: var(--teal-tint); color: var(--teal-dark); }
+
+  /* ---------- Form ---------- */
+  form { padding: 8px 44px 44px; }
+
+  .section {
+    padding: 26px 0 6px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .section:last-of-type { border-bottom: none; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .section-num {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--teal);
+    border: 1px solid var(--teal);
+    border-radius: 2px;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .section-head h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 19px;
+    margin: 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+    row-gap: 18px;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+
+  .field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .field .code {
+    color: var(--ink-faint);
+    font-weight: 400;
+    font-size: 12px;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  .field .hint {
+    font-size: 12px;
+    color: var(--ink-faint);
+    line-height: 1.35;
+  }
+
+  input, select {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--paper-2);
+    border: 1px solid var(--hairline-strong);
+    border-radius: 3px;
+    padding: 9px 11px;
+    width: 100%;
+    transition: border-color .12s, box-shadow .12s;
+    appearance: none;
+  }
+  select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%2333475b' stroke-width='1.5'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 11px center;
+    padding-right: 30px;
+  }
+  input:hover, select:hover { border-color: var(--ink-faint); }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px var(--teal-tint);
+  }
+  .field.invalid input,
+  .field.invalid select {
+    border-color: var(--danger);
+    background: var(--danger-tint);
+  }
+  .field .err {
+    font-size: 12px;
+    color: var(--danger);
+    display: none;
+  }
+  .field.invalid .err { display: block; }
+
+  /* ---------- Actions ---------- */
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-top: 30px;
+    flex-wrap: wrap;
+  }
+  .btn-predict {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    color: #fff;
+    background: var(--teal);
+    border: 1px solid var(--teal-dark);
+    border-radius: 3px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .btn-predict:hover { background: var(--teal-dark); }
+  .btn-predict:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .btn-predict:disabled { background: var(--ink-faint); border-color: var(--ink-faint); cursor: progress; }
+
+  .btn-reset {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .btn-reset:hover { color: var(--teal-dark); }
+
+  .form-msg {
+    font-size: 13px;
+    color: var(--danger);
+    display: none;
+  }
+  .form-msg.show { display: block; }
+
+  /* ---------- Result ---------- */
+  .result {
+    margin: 34px 44px 0;
+    border: 1px solid var(--hairline-strong);
+    border-top: 3px solid var(--teal);
+    border-radius: 3px;
+    background: var(--paper);
+    display: none;
+  }
+  .result.show { display: block; }
+  .result.state-error { border-top-color: var(--danger); }
+
+  .result-inner { padding: 24px 28px; }
+
+  .result-loading {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: var(--ink-soft);
+  }
+  .spinner {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid var(--hairline-strong);
+    border-top-color: var(--teal);
+    animation: spin .7s linear infinite;
+    flex: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .result-eyebrow {
+    font-size: 12px; letter-spacing: 0.1em; color: var(--teal);
+    font-weight: 600; margin: 0 0 6px;
+  }
+  .verdict {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .verdict .dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+  .verdict.yes .dot { background: var(--teal); }
+  .verdict.no .dot { background: var(--ink-faint); }
+
+  .confidence-row {
+    display: flex; align-items: baseline; gap: 8px;
+    margin: 14px 0 6px;
+  }
+  .confidence-row .pct { font-family: var(--serif); font-size: 22px; font-weight: 600; }
+  .confidence-row .pct-label { font-size: 13px; color: var(--ink-faint); }
+  .meter {
+    height: 8px; background: var(--hairline); border-radius: 2px; overflow: hidden;
+  }
+  .meter > span {
+    display: block; height: 100%; background: var(--teal);
+    width: 0; transition: width .5s ease;
+  }
+  .verdict.no ~ .confidence-row + .meter > span,
+  .meter.no > span { background: var(--ink-faint); }
+
+  .explain { margin: 14px 0 0; font-size: 14px; color: var(--ink-soft); }
+  .result-error-text { color: var(--danger); font-size: 14px; margin: 0; }
+
+  /* ---------- History ---------- */
+  .history { padding: 40px 44px 48px; }
+  .history-head {
+    display: flex; align-items: baseline; gap: 12px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 8px; margin-bottom: 0;
+  }
+  .history-head h2 { font-family: var(--serif); font-size: 19px; font-weight: 600; margin: 0; }
+  .history-head .count { font-size: 12px; color: var(--ink-faint); margin-left: auto; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left; font-weight: 600; color: var(--ink-faint);
+    font-size: 11px; letter-spacing: 0.06em;
+    padding: 10px 8px; border-bottom: 1px solid var(--hairline);
+  }
+  tbody td { padding: 11px 8px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  td .tag {
+    font-weight: 600; font-size: 12px;
+    padding: 2px 8px; border-radius: 2px; display: inline-block;
+  }
+  td .tag.yes { background: var(--teal-tint); color: var(--teal-dark); }
+  td .tag.no { background: #eceff1; color: var(--ink-soft); }
+  .empty-history { color: var(--ink-faint); font-size: 13px; padding: 18px 8px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 720px) {
+    .masthead { padding: 24px 20px 18px; }
+    .masthead h1 { font-size: 24px; }
+    form { padding: 4px 20px 32px; }
+    .grid { grid-template-columns: 1fr; column-gap: 0; }
+    .result { margin: 26px 20px 0; }
+    .history { padding: 32px 20px 40px; overflow-x: auto; }
+    table { min-width: 520px; }
+  }
+</style>
+</head>
+<body>
+<main class="sheet">
+
+  <header class="masthead">
+    <div>
+      <p class="brand-eyebrow" data-i18n="eyebrow">Modelo de clasificación · Bank Marketing</p>
+      <h1 data-i18n="title">Predicción de Depósito a Plazo</h1>
+      <p class="tagline" data-i18n="tagline">Estime si un cliente suscribirá un depósito a plazo tras la campaña.</p>
+    </div>
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <span class="lang-label" data-i18n="langLabel">Idioma</span>
+      <button type="button" data-lang="es" class="active">ES</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <form id="form" novalidate>
+
+    <!-- 1 · Datos personales -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-num">1</span>
+        <h2 data-i18n="sec.personal">Datos personales</h2>
+      </div>
+      <div class="grid">
+        <div class="field" data-field="age">
+          <label for="age"><span data-i18n="f.age">Edad</span> <span class="code">age</span></label>
+          <input type="number" id="age" name="age" min="1" max="99" step="1" />
+          <span class="hint" data-i18n="h.age">Entre 1 y 99 años.</span>
+          <span class="err" data-i18n="e.age">Introduzca una edad entre 1 y 99.</span>
+        </div>
+        <div class="field" data-field="job">
+          <label for="job"><span data-i18n="f.job">Ocupación</span> <span class="code">job</span></label>
+          <select id="job" name="job">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="blue-collar" data-i18n="job.blue-collar">Obrero</option>
+            <option value="management" data-i18n="job.management">Directivo</option>
+            <option value="technician" data-i18n="job.technician">Técnico</option>
+            <option value="admin." data-i18n="job.admin">Administrativo</option>
+            <option value="services" data-i18n="job.services">Servicios</option>
+            <option value="retired" data-i18n="job.retired">Jubilado</option>
+            <option value="self-employed" data-i18n="job.self-employed">Autónomo</option>
+            <option value="entrepreneur" data-i18n="job.entrepreneur">Empresario</option>
+            <option value="unemployed" data-i18n="job.unemployed">Desempleado</option>
+            <option value="housemaid" data-i18n="job.housemaid">Empleada del hogar</option>
+            <option value="student" data-i18n="job.student">Estudiante</option>
+          </select>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+        <div class="field" data-field="marital">
+          <label for="marital"><span data-i18n="f.marital">Estado civil</span> <span class="code">marital</span></label>
+          <select id="marital" name="marital">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="married" data-i18n="marital.married">Casado/a</option>
+            <option value="single" data-i18n="marital.single">Soltero/a</option>
+            <option value="divorced" data-i18n="marital.divorced">Divorciado/a</option>
+          </select>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+        <div class="field" data-field="education">
+          <label for="education"><span data-i18n="f.education">Nivel educativo</span> <span class="code">education</span></label>
+          <select id="education" name="education">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="secondary" data-i18n="edu.secondary">Secundaria</option>
+            <option value="tertiary" data-i18n="edu.tertiary">Superior</option>
+            <option value="primary" data-i18n="edu.primary">Primaria</option>
+            <option value="unknown" data-i18n="edu.unknown">Desconocido</option>
+          </select>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · Situación financiera -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-num">2</span>
+        <h2 data-i18n="sec.financial">Situación financiera</h2>
+      </div>
+      <div class="grid">
+        <div class="field" data-field="balance">
+          <label for="balance"><span data-i18n="f.balance">Saldo medio anual</span> <span class="code">balance</span></label>
+          <input type="number" id="balance" name="balance" step="0.01" />
+          <span class="hint" data-i18n="h.balance">En euros. Admite decimales y valores negativos.</span>
+          <span class="err" data-i18n="e.balance">Introduzca un importe numérico.</span>
+        </div>
+        <div class="field" data-field="default">
+          <label for="default"><span data-i18n="f.default">Impago en curso</span> <span class="code">default</span></label>
+          <select id="default" name="default">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="no" data-i18n="opt.no">No</option>
+            <option value="yes" data-i18n="opt.yes">Sí</option>
+          </select>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+        <div class="field" data-field="housing">
+          <label for="housing"><span data-i18n="f.housing">Préstamo hipotecario</span> <span class="code">housing</span></label>
+          <select id="housing" name="housing">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="yes" data-i18n="opt.yes">Sí</option>
+            <option value="no" data-i18n="opt.no">No</option>
+          </select>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+        <div class="field" data-field="loan">
+          <label for="loan"><span data-i18n="f.loan">Préstamo personal</span> <span class="code">loan</span></label>
+          <select id="loan" name="loan">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="no" data-i18n="opt.no">No</option>
+            <option value="yes" data-i18n="opt.yes">Sí</option>
+          </select>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · Contacto actual -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-num">3</span>
+        <h2 data-i18n="sec.contact">Contacto actual</h2>
+      </div>
+      <div class="grid">
+        <div class="field" data-field="contact">
+          <label for="contact"><span data-i18n="f.contact">Tipo de contacto</span> <span class="code">contact</span></label>
+          <select id="contact" name="contact">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="cellular" data-i18n="con.cellular">Móvil</option>
+            <option value="unknown" data-i18n="con.unknown">Desconocido</option>
+            <option value="telephone" data-i18n="con.telephone">Teléfono fijo</option>
+          </select>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+        <div class="field" data-field="day">
+          <label for="day"><span data-i18n="f.day">Día del último contacto</span> <span class="code">day</span></label>
+          <input type="number" id="day" name="day" min="1" max="31" step="1" />
+          <span class="hint" data-i18n="h.day">Día del mes, entre 1 y 31.</span>
+          <span class="err" data-i18n="e.day">Introduzca un día entre 1 y 31.</span>
+        </div>
+        <div class="field" data-field="month">
+          <label for="month"><span data-i18n="f.month">Mes del último contacto</span> <span class="code">month</span></label>
+          <select id="month" name="month">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="jan" data-i18n="mon.jan">Enero</option>
+            <option value="feb" data-i18n="mon.feb">Febrero</option>
+            <option value="mar" data-i18n="mon.mar">Marzo</option>
+            <option value="apr" data-i18n="mon.apr">Abril</option>
+            <option value="may" data-i18n="mon.may">Mayo</option>
+            <option value="jun" data-i18n="mon.jun">Junio</option>
+            <option value="jul" data-i18n="mon.jul">Julio</option>
+            <option value="aug" data-i18n="mon.aug">Agosto</option>
+            <option value="sep" data-i18n="mon.sep">Septiembre</option>
+            <option value="oct" data-i18n="mon.oct">Octubre</option>
+            <option value="nov" data-i18n="mon.nov">Noviembre</option>
+            <option value="dec" data-i18n="mon.dec">Diciembre</option>
+          </select>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · Historial de campaña -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-num">4</span>
+        <h2 data-i18n="sec.campaign">Historial de campaña</h2>
+      </div>
+      <div class="grid">
+        <div class="field" data-field="campaign">
+          <label for="campaign"><span data-i18n="f.campaign">Contactos en esta campaña</span> <span class="code">campaign</span></label>
+          <input type="number" id="campaign" name="campaign" min="0" step="1" />
+          <span class="hint" data-i18n="h.campaign">Número de contactos durante esta campaña.</span>
+          <span class="err" data-i18n="e.nonneg">Introduzca un número igual o mayor que 0.</span>
+        </div>
+        <div class="field" data-field="pdays">
+          <label for="pdays"><span data-i18n="f.pdays">¿Contacto previo a esta campaña?</span> <span class="code">pdays</span></label>
+          <select id="pdays" name="pdays">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="1" data-i18n="opt.yes">Sí</option>
+            <option value="-1" data-i18n="opt.no">No</option>
+          </select>
+          <span class="hint" data-i18n="h.pdays">Se envía como 1 (sí) o -1 (no).</span>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+        <div class="field" data-field="previous">
+          <label for="previous"><span data-i18n="f.previous">Contactos antes de esta campaña</span> <span class="code">previous</span></label>
+          <input type="number" id="previous" name="previous" min="0" step="1" />
+          <span class="hint" data-i18n="h.previous">Número de contactos anteriores.</span>
+          <span class="err" data-i18n="e.nonneg">Introduzca un número igual o mayor que 0.</span>
+        </div>
+        <div class="field" data-field="poutcome">
+          <label for="poutcome"><span data-i18n="f.poutcome">Resultado de la campaña anterior</span> <span class="code">poutcome</span></label>
+          <select id="poutcome" name="poutcome">
+            <option value="" data-i18n="opt.choose">— Seleccione —</option>
+            <option value="unknown" data-i18n="po.none">Sin contacto previo</option>
+            <option value="failure" data-i18n="po.failure">Fracaso</option>
+            <option value="other" data-i18n="po.other">Otro</option>
+            <option value="success" data-i18n="po.success">Éxito</option>
+          </select>
+          <span class="err" data-i18n="e.required">Este campo es obligatorio.</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button type="submit" class="btn-predict" id="submitBtn" data-i18n="btn.predict">Predecir</button>
+      <button type="button" class="btn-reset" id="resetBtn" data-i18n="btn.reset">Limpiar formulario</button>
+      <span class="form-msg" id="formMsg" data-i18n="msg.incomplete">Revise los campos marcados: faltan datos o están fuera de rango.</span>
+    </div>
+  </form>
+
+  <!-- Result card -->
+  <section class="result" id="result" aria-live="polite">
+    <div class="result-inner" id="resultInner"></div>
+  </section>
+
+  <!-- History -->
+  <section class="history">
+    <div class="history-head">
+      <h2 data-i18n="hist.title">Historial de la sesión</h2>
+      <span class="count" id="histCount"></span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="hist.time">Hora</th>
+          <th data-i18n="hist.profile">Perfil</th>
+          <th data-i18n="hist.result">Predicción</th>
+          <th data-i18n="hist.conf">Confianza</th>
+        </tr>
+      </thead>
+      <tbody id="histBody"></tbody>
+    </table>
+    <p class="empty-history" id="emptyHistory" data-i18n="hist.empty">Aún no hay predicciones en esta sesión.</p>
+  </section>
+
+</main>
+
+<script>
+/* =========================================================================
+   Diccionario de traducciones
+   ========================================================================= */
+const I18N = {
+  es: {
+    "title": "Predicción de Depósito a Plazo",
+    "eyebrow": "Modelo de clasificación · Bank Marketing",
+    "tagline": "Estime si un cliente suscribirá un depósito a plazo tras la campaña.",
+    "langLabel": "Idioma",
+    "sec.personal": "Datos personales",
+    "sec.financial": "Situación financiera",
+    "sec.contact": "Contacto actual",
+    "sec.campaign": "Historial de campaña",
+    "f.age": "Edad", "h.age": "Entre 1 y 99 años.", "e.age": "Introduzca una edad entre 1 y 99.",
+    "f.job": "Ocupación",
+    "f.marital": "Estado civil",
+    "f.education": "Nivel educativo",
+    "f.balance": "Saldo medio anual", "h.balance": "En euros. Admite decimales y valores negativos.", "e.balance": "Introduzca un importe numérico.",
+    "f.default": "Impago en curso",
+    "f.housing": "Préstamo hipotecario",
+    "f.loan": "Préstamo personal",
+    "f.contact": "Tipo de contacto",
+    "f.day": "Día del último contacto", "h.day": "Día del mes, entre 1 y 31.", "e.day": "Introduzca un día entre 1 y 31.",
+    "f.month": "Mes del último contacto",
+    "f.campaign": "Contactos en esta campaña", "h.campaign": "Número de contactos durante esta campaña.",
+    "f.pdays": "¿Contacto previo a esta campaña?", "h.pdays": "Se envía como 1 (sí) o 0 (no).",
+    "f.previous": "Contactos antes de esta campaña", "h.previous": "Número de contactos anteriores.",
+    "f.poutcome": "Resultado de la campaña anterior",
+    "e.nonneg": "Introduzca un número igual o mayor que 0.",
+    "e.required": "Este campo es obligatorio.",
+    "opt.choose": "— Seleccione —", "opt.yes": "Sí", "opt.no": "No",
+    "job.blue-collar": "Obrero", "job.management": "Directivo", "job.technician": "Técnico",
+    "job.admin": "Administrativo", "job.services": "Servicios", "job.retired": "Jubilado",
+    "job.self-employed": "Autónomo", "job.entrepreneur": "Empresario", "job.unemployed": "Desempleado",
+    "job.housemaid": "Empleada del hogar", "job.student": "Estudiante",
+    "marital.married": "Casado/a", "marital.single": "Soltero/a", "marital.divorced": "Divorciado/a",
+    "edu.secondary": "Secundaria", "edu.tertiary": "Superior", "edu.primary": "Primaria", "edu.unknown": "Desconocido",
+    "con.cellular": "Móvil", "con.unknown": "Desconocido", "con.telephone": "Teléfono fijo",
+    "mon.jan": "Enero", "mon.feb": "Febrero", "mon.mar": "Marzo", "mon.apr": "Abril",
+    "mon.may": "Mayo", "mon.jun": "Junio", "mon.jul": "Julio", "mon.aug": "Agosto",
+    "mon.sep": "Septiembre", "mon.oct": "Octubre", "mon.nov": "Noviembre", "mon.dec": "Diciembre",
+    "po.none": "Sin contacto previo", "po.failure": "Fracaso", "po.other": "Otro", "po.success": "Éxito",
+    "btn.predict": "Predecir", "btn.reset": "Limpiar formulario",
+    "msg.incomplete": "Revise los campos marcados: faltan datos o están fuera de rango.",
+    "hist.title": "Historial de la sesión", "hist.time": "Hora", "hist.profile": "Perfil",
+    "hist.result": "Predicción", "hist.conf": "Confianza",
+    "hist.empty": "Aún no hay predicciones en esta sesión.",
+    "res.eyebrow": "Resultado del modelo",
+    "res.loading": "Consultando el modelo…",
+    "res.yes": "Suscribirá el depósito",
+    "res.no": "No suscribirá el depósito",
+    "res.confLabel": "de confianza",
+    "res.explainYes": "El perfil muestra señales favorables: es probable que el cliente acepte el depósito a plazo. Priorice el seguimiento.",
+    "res.explainNo": "El perfil muestra señales débiles: es poco probable que el cliente acepte en esta campaña.",
+    "res.error": "No se pudo obtener la predicción. Inténtelo de nuevo.",
+    "res.segment": "Segmento asignado",
+    "hist.subscribes": "Suscribe", "hist.declines": "No suscribe",
+    "count.one": "1 predicción", "count.many": "{n} predicciones"
+  },
+  en: {
+    "title": "Term Deposit Prediction",
+    "eyebrow": "Classification model · Bank Marketing",
+    "tagline": "Estimate whether a client will subscribe to a term deposit after the campaign.",
+    "langLabel": "Language",
+    "sec.personal": "Personal details",
+    "sec.financial": "Financial situation",
+    "sec.contact": "Current contact",
+    "sec.campaign": "Campaign history",
+    "f.age": "Age", "h.age": "Between 1 and 99 years.", "e.age": "Enter an age between 1 and 99.",
+    "f.job": "Occupation",
+    "f.marital": "Marital status",
+    "f.education": "Education level",
+    "f.balance": "Average yearly balance", "h.balance": "In euros. Decimals and negative values allowed.", "e.balance": "Enter a numeric amount.",
+    "f.default": "Credit in default",
+    "f.housing": "Housing loan",
+    "f.loan": "Personal loan",
+    "f.contact": "Contact type",
+    "f.day": "Day of last contact", "h.day": "Day of month, between 1 and 31.", "e.day": "Enter a day between 1 and 31.",
+    "f.month": "Month of last contact",
+    "f.campaign": "Contacts during this campaign", "h.campaign": "Number of contacts during this campaign.",
+    "f.pdays": "Contacted before this campaign?", "h.pdays": "Sent as 1 (yes) or -1 (no).",
+    "f.previous": "Contacts before this campaign", "h.previous": "Number of previous contacts.",
+    "f.poutcome": "Previous campaign outcome",
+    "e.nonneg": "Enter a number equal to or greater than 0.",
+    "e.required": "This field is required.",
+    "opt.choose": "— Select —", "opt.yes": "Yes", "opt.no": "No",
+    "job.blue-collar": "Blue-collar", "job.management": "Management", "job.technician": "Technician",
+    "job.admin": "Administrative", "job.services": "Services", "job.retired": "Retired",
+    "job.self-employed": "Self-employed", "job.entrepreneur": "Entrepreneur", "job.unemployed": "Unemployed",
+    "job.housemaid": "Housemaid", "job.student": "Student",
+    "marital.married": "Married", "marital.single": "Single", "marital.divorced": "Divorced",
+    "edu.secondary": "Secondary", "edu.tertiary": "Tertiary", "edu.primary": "Primary", "edu.unknown": "Unknown",
+    "con.cellular": "Cellular", "con.unknown": "Unknown", "con.telephone": "Telephone",
+    "mon.jan": "January", "mon.feb": "February", "mon.mar": "March", "mon.apr": "April",
+    "mon.may": "May", "mon.jun": "June", "mon.jul": "July", "mon.aug": "August",
+    "mon.sep": "September", "mon.oct": "October", "mon.nov": "November", "mon.dec": "December",
+    "po.none": "No previous contact", "po.failure": "Failure", "po.other": "Other", "po.success": "Success",
+    "btn.predict": "Predict", "btn.reset": "Clear form",
+    "msg.incomplete": "Check the highlighted fields: data is missing or out of range.",
+    "hist.title": "Session history", "hist.time": "Time", "hist.profile": "Profile",
+    "hist.result": "Prediction", "hist.conf": "Confidence",
+    "hist.empty": "No predictions in this session yet.",
+    "res.eyebrow": "Model output",
+    "res.loading": "Querying the model…",
+    "res.yes": "Will subscribe to the deposit",
+    "res.no": "Will not subscribe to the deposit",
+    "res.confLabel": "confidence",
+    "res.explainYes": "The profile shows favourable signals: the client is likely to accept the term deposit. Prioritise follow-up.",
+    "res.explainNo": "The profile shows weak signals: the client is unlikely to accept in this campaign.",
+    "res.error": "The prediction could not be obtained. Please try again.",
+    "res.segment": "Assigned segment",
+    "hist.subscribes": "Subscribes", "hist.declines": "Declines",
+    "count.one": "1 prediction", "count.many": "{n} predictions"
+  }
+};
+
+let lang = "es";
+const t = (key) => (I18N[lang] && I18N[lang][key]) || key;
+
+/* =========================================================================
+   Traducción dinámica
+   ========================================================================= */
+function applyLanguage(next) {
+  lang = next;
+  document.documentElement.lang = next;
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    const val = t(key);
+    if (el.tagName === "TITLE") el.textContent = val;
+    else el.textContent = val;
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    el.placeholder = t(el.getAttribute("data-i18n-placeholder"));
+  });
+
+  document.querySelectorAll(".lang button").forEach(b =>
+    b.classList.toggle("active", b.dataset.lang === next));
+
+  // re-render partes dinámicas
+  renderHistory();
+  if (lastResult) renderResult(lastResult);
+}
+
+document.querySelectorAll(".lang button").forEach(btn => {
+  btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
+});
+
+/* =========================================================================
+   Validación + recogida de datos
+   ========================================================================= */
+const form = document.getElementById("form");
+const NUMERIC = {
+  age:      { min: 1,  max: 99,  int: true },
+  balance:  { },                 // libre, decimales y negativos
+  day:      { min: 1,  max: 31,  int: true },
+  campaign: { min: 0,  int: true },
+  previous: { min: 0,  int: true }
+};
+const REQUIRED_SELECTS = ["job","marital","education","default","housing","loan","contact","month","pdays","poutcome"];
+
+function fieldEl(name){ return form.querySelector('.field[data-field="'+name+'"]'); }
+function markInvalid(name, bad){ fieldEl(name).classList.toggle("invalid", bad); }
+
+function collectAndValidate() {
+  let ok = true;
+  const data = {};
+
+  // numéricos
+  for (const [name, rule] of Object.entries(NUMERIC)) {
+    const raw = form.elements[name].value.trim();
+    let bad = raw === "" || isNaN(Number(raw));
+    if (!bad) {
+      const num = Number(raw);
+      if (rule.int && !Number.isInteger(num)) bad = true;
+      if (rule.min !== undefined && num < rule.min) bad = true;
+      if (rule.max !== undefined && num > rule.max) bad = true;
+      if (!bad) data[name] = num;
+    }
+    markInvalid(name, bad);
+    if (bad) ok = false;
+  }
+
+  // selects obligatorios
+  for (const name of REQUIRED_SELECTS) {
+    const val = form.elements[name].value;
+    const bad = val === "";
+    markInvalid(name, bad);
+    if (bad) ok = false;
+    else data[name] = (name === "pdays") ? Number(val) : val;
+  }
+
+  return { ok, data };
+}
+
+// limpiar marca de error al corregir
+form.querySelectorAll("input, select").forEach(el => {
+  el.addEventListener("input", () => {
+    const wrap = el.closest(".field");
+    if (wrap && wrap.classList.contains("invalid")) wrap.classList.remove("invalid");
+    document.getElementById("formMsg").classList.remove("show");
+  });
+});
+
+/* =========================================================================
+   getPrediction — SIMULACIÓN (sustituible por fetch real)
+   ========================================================================= */
+// Ruta relativa: la página se sirve desde el mismo Flask que expone /predict,
+// así funciona en cualquier dominio y sin depender de CORS.
+// Si alojas el HTML en otro sitio (GitHub Pages, Netlify), pon la URL absoluta:
+//   const API_URL = "https://despliegue-modelo-tc.onrender.com/predict";
+const API_URL = "/predict";
+
+function getPrediction(datos) {
+  // Llamada REAL al modelo vía POST /predict.
+  // La API responde: { prediction: 1|0, probability: 0..1, segment: N }
+  // Aquí se traduce prediction 1/0 -> "yes"/"no" para el resto de la página.
+  //
+  // Nota: requiere CORS habilitado en el backend (flask-cors). Sin él, el
+  // navegador bloqueará esta petición con el error Access-Control-Allow-Origin.
+  return fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos)
+  }).then(async (r) => {
+    let raw = {};
+    try { raw = await r.json(); } catch (_) { /* respuesta no-JSON */ }
+
+    if (!r.ok) {
+      // la API devuelve { error, detalle | missing_fields } con 400/500
+      const extra = raw.missing_fields ? (": " + raw.missing_fields.join(", "))
+                  : raw.detalle ? (": " + raw.detalle) : "";
+      throw new Error((raw.error || ("HTTP " + r.status)) + extra);
+    }
+
+    return {
+      prediction: Number(raw.prediction) === 1 ? "yes" : "no",
+      probability: Number(raw.probability),
+      segment: raw.segment
+    };
+  });
+}
+
+/* =========================================================================
+   Estados de la tarjeta de resultado
+   ========================================================================= */
+const resultEl = document.getElementById("result");
+const resultInner = document.getElementById("resultInner");
+let lastResult = null;   // {prediction, probability, segment} para re-render al cambiar idioma
+
+const esc = (s) => String(s).replace(/[&<>"]/g,
+  c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+function showLoading() {
+  lastResult = null;
+  resultEl.classList.remove("state-error");
+  resultEl.classList.add("show");
+  resultInner.innerHTML =
+    '<div class="result-loading"><span class="spinner"></span>' +
+    '<span>' + t("res.loading") + '</span></div>';
+  resultEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function showError(detail) {
+  lastResult = null;
+  resultEl.classList.add("show", "state-error");
+  resultInner.innerHTML = '<p class="result-error-text">' + t("res.error") +
+    (detail ? ' <span style="opacity:.7">(' + esc(detail) + ')</span>' : '') + '</p>';
+}
+
+function renderResult(res) {
+  lastResult = res;
+  resultEl.classList.remove("state-error");
+  resultEl.classList.add("show");
+  const yes = res.prediction === "yes";
+  const pct = Math.round(res.probability * 1000) / 10;   // 1 decimal
+  // confianza = prob de la clase predicha
+  const conf = yes ? pct : Math.round((100 - pct) * 10) / 10;
+
+  resultInner.innerHTML =
+    '<p class="result-eyebrow">' + t("res.eyebrow") + '</p>' +
+    '<h3 class="verdict ' + (yes ? "yes" : "no") + '">' +
+      '<span class="dot"></span>' + (yes ? t("res.yes") : t("res.no")) +
+    '</h3>' +
+    '<div class="confidence-row">' +
+      '<span class="pct">' + conf.toLocaleString(lang) + '%</span>' +
+      '<span class="pct-label">' + t("res.confLabel") + '</span>' +
+    '</div>' +
+    '<div class="meter ' + (yes ? "" : "no") + '"><span style="width:' + conf + '%"></span></div>' +
+    '<p class="explain">' + (yes ? t("res.explainYes") : t("res.explainNo")) + '</p>' +
+    (res.segment != null && res.segment !== ""
+      ? '<p class="explain" style="margin-top:8px"><strong>' + t("res.segment") +
+        ':</strong> ' + esc(res.segment) + '</p>'
+      : '');
+}
+
+/* =========================================================================
+   Historial de la sesión
+   ========================================================================= */
+const history = [];   // {time, data, res}
+
+function profileSummary(d) {
+  const jobKey = "job." + d.job.replace(".", "");
+  return t(jobKey) + " · " + d.age + " · " + t("edu." + d.education);
+}
+
+function renderHistory() {
+  const body = document.getElementById("histBody");
+  const empty = document.getElementById("emptyHistory");
+  const count = document.getElementById("histCount");
+
+  if (history.length === 0) {
+    body.innerHTML = "";
+    empty.style.display = "block";
+    count.textContent = "";
+    return;
+  }
+  empty.style.display = "none";
+  count.textContent = history.length === 1
+    ? t("count.one")
+    : t("count.many").replace("{n}", history.length);
+
+  body.innerHTML = history.map(row => {
+    const yes = row.res.prediction === "yes";
+    const pct = Math.round(row.res.probability * 1000) / 10;
+    const conf = yes ? pct : Math.round((100 - pct) * 10) / 10;
+    const tag = yes
+      ? '<span class="tag yes">' + t("hist.subscribes") + '</span>'
+      : '<span class="tag no">' + t("hist.declines") + '</span>';
+    return "<tr>" +
+      "<td>" + row.time + "</td>" +
+      "<td>" + profileSummary(row.data) + "</td>" +
+      "<td>" + tag + "</td>" +
+      "<td>" + conf.toLocaleString(lang) + "%</td>" +
+      "</tr>";
+  }).join("");
+}
+
+/* =========================================================================
+   Envío del formulario
+   ========================================================================= */
+const submitBtn = document.getElementById("submitBtn");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const { ok, data } = collectAndValidate();
+  const formMsg = document.getElementById("formMsg");
+
+  if (!ok) {
+    formMsg.classList.add("show");
+    form.querySelector(".field.invalid input, .field.invalid select")?.focus();
+    return;
+  }
+  formMsg.classList.remove("show");
+
+  submitBtn.disabled = true;
+  showLoading();
+
+  try {
+    const res = await getPrediction(data);
+    renderResult(res);
+    history.unshift({
+      time: new Date().toLocaleTimeString(lang, { hour: "2-digit", minute: "2-digit" }),
+      data,
+      res
+    });
+    renderHistory();
+  } catch (err) {
+    showError(err && err.message);
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+/* Reset */
+document.getElementById("resetBtn").addEventListener("click", () => {
+  form.reset();
+  form.querySelectorAll(".field.invalid").forEach(f => f.classList.remove("invalid"));
+  document.getElementById("formMsg").classList.remove("show");
+  resultEl.classList.remove("show", "state-error");
+  lastResult = null;
+});
+
+/* Init */
+applyLanguage("es");
+renderHistory();
+</script>
+</body>
+</html>
