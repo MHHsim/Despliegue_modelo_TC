@@ -342,10 +342,10 @@ Una vez realizado el despliegue, Render proporcionará una URL pública desde la
 
 ## Autores
 
-### Claudia
+### Claudia Franzoni Hernández
 
 * GitHub: https://github.com/claudiafranzoni
-* LinkedIn: https://www.linkedin.com/in/claudia-franzoni-800529196/
+* LinkedIn: https://www.linkedin.com/in/claudia-franzoni-h
 
 ### Marta Harana Herrera
 
