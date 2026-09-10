@@ -71,6 +71,15 @@ Despliegue_modelo_TC/
 
 ---
 
+## Flujo de trabajo con Git (Git Flow)
+
+El proyecto sigue un flujo de ramas estructurado:
+
+| Rama | Propósito |
+|------|-----------|
+| `main` | Código en producción. Solo recibe cambios vía Pull Request. |
+| `develop` | Integración de funcionalidades antes de pasar a producción. |
+| `feature/nombre` | Desarrollo de una funcionalidad concreta. |
 ## Instalación y configuración
 
 ### 1. Clonar el repositorio
@@ -126,21 +135,19 @@ http://127.0.0.1:5000
 
 ---
 
-## Flujo de trabajo con Git (Git Flow)
+## Usar la API en línea
 
-El proyecto sigue un flujo de ramas estructurado:
+La API está desplegada y disponible públicamente en Render:
+https://despliegue-modelo-tc.onrender.com
 
-| Rama | Propósito |
-|------|-----------|
-| `main` | Código en producción. Solo recibe cambios vía Pull Request. |
-| `develop` | Integración de funcionalidades antes de pasar a producción. |
-| `feature/nombre` | Desarrollo de una funcionalidad concreta. |
+No requiere instalación ni configuración: cualquier persona con conexión a internet puede consultarla directamente.
 
----
+También puedes acceder utilizando:
+requests.get("https://despliegue-modelo-tc.onrender.com")
 
-## Mantenimiento en producción
+Manteniendo la misma estructura de tres bloques, es decir, URL principal, forma alternativa de acceso, pero adaptado al hecho de que aquí no hay "puerto" ni "localhost" — solo la URL pública.
 
-El plan gratuito de Render duerme la aplicación tras 15 minutos de inactividad. Para evitarlo, se configuró un cron job externo ([cron-job.org](https://cron-job.org)) que realiza una petición `GET` a la URL principal cada 14 minutos.
+Los endpoints que abarca la aplicación se detallan a continuación.
 
 ---
 
@@ -220,6 +227,9 @@ La API devuelve la predicción en formato JSON con la misma estructura que el en
 * `probability` indica la probabilidad asociada a dicha predicción.
 * `segment` indica el segmento al que pertenece el cliente.
 
+## Mantenimiento en producción
+
+El plan gratuito de Render duerme la aplicación tras 15 minutos de inactividad. Para evitarlo, se configuró un cron job externo ([cron-job.org](https://cron-job.org)) que realiza una petición `GET` a la URL principal cada 14 minutos.
 
 ## Lógica de predicción
 
@@ -288,17 +298,6 @@ La API puede desplegarse en **Render** utilizando **Gunicorn** como servidor de 
 gunicorn app.main:app
 ```
 
-### Archivo `render.yaml`
-
-```yaml
-services:
-  - type: web
-    name: bank-marketing-api
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app.main:app"
-```
-
 Una vez realizado el despliegue, Render proporcionará una URL pública desde la que se podrá acceder a la API.
 
 ---
@@ -341,4 +340,3 @@ app/model/
 Para que la API funcione correctamente, es necesario mantener la estructura de directorios esperada por `predictor.py`.
 
 ---
-
