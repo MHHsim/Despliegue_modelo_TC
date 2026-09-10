@@ -1,8 +1,14 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Despliegue Modelo ML — API de marketing bancario" width="100%">
+</p>
+
 # Despliegue Modelo — Bank Marketing API
 
 API desarrollada para realizar predicciones sobre el dataset **Bank Marketing**, utilizando modelos de Machine Learning previamente entrenados durante el Bootcamp de Data Science.
 
 La API recibe información de un cliente, realiza el procesamiento necesario, asigna un segmento mediante **KMeans** y genera una predicción mediante un modelo de clasificación.
+
+Incluye además una **interfaz web** (cuestionario) para generar predicciones desde el navegador, disponible en la ruta [`/app`](https://despliegue-modelo-tc.onrender.com/app).
 
 ---
 
@@ -43,6 +49,9 @@ Despliegue_modelo_TC/
 │   │   ├── kmeans_segmentacion.pkl
 │   │   └── scaler_segmentacion.pkl
 │   │
+│   ├── static/
+│   │   └── predictor.html      # Interfaz web (cuestionario)
+│   │
 │   ├── utils/
 │   │   ├── __init__.py
 │   │   └── .gitignore
@@ -62,6 +71,7 @@ Despliegue_modelo_TC/
 
 * Python
 * Flask
+* Flask-CORS
 * Catboost
 * Gunicorn
 * Pandas
@@ -80,6 +90,9 @@ El proyecto sigue un flujo de ramas estructurado:
 | `main` | Código en producción. Solo recibe cambios vía Pull Request. |
 | `develop` | Integración de funcionalidades antes de pasar a producción. |
 | `feature/nombre` | Desarrollo de una funcionalidad concreta. |
+
+---
+
 ## Instalación y configuración
 
 ### 1. Clonar el repositorio
@@ -142,12 +155,37 @@ https://despliegue-modelo-tc.onrender.com
 
 No requiere instalación ni configuración: cualquier persona con conexión a internet puede consultarla directamente.
 
-También puedes acceder utilizando:
-requests.get("https://despliegue-modelo-tc.onrender.com")
+También puedes consultarla desde código, por ejemplo con Python:
 
-Manteniendo la misma estructura de tres bloques, es decir, URL principal, forma alternativa de acceso, pero adaptado al hecho de que aquí no hay "puerto" ni "localhost" — solo la URL pública.
+```python
+import requests
+requests.get("https://despliegue-modelo-tc.onrender.com")
+```
 
 Los endpoints que abarca la aplicación se detallan a continuación.
+
+---
+
+## Interfaz web (cuestionario)
+
+Además de la API, el proyecto incluye una **interfaz web** para generar predicciones desde el navegador, sin necesidad de escribir peticiones a mano.
+
+Está disponible en la ruta `/app` del mismo servidor:
+
+```text
+https://despliegue-modelo-tc.onrender.com/app
+```
+
+Es una página en HTML, CSS y JavaScript (sin frameworks) que:
+
+* Presenta un formulario con las **15 variables** agrupadas en 4 secciones (datos personales, situación financiera, contacto actual e historial de campaña).
+* Valida los campos y envía los datos como `POST /predict`.
+* Muestra el resultado (predicción, probabilidad y segmento) y un historial de la sesión.
+* Incluye **selector de idioma ES/EN**.
+
+La página se sirve desde Flask (`app/static/predictor.html`), por lo que comparte origen con la API y llama a `/predict` mediante una ruta relativa.
+
+Como la interfaz y la API viven en el mismo servidor no es estrictamente necesario CORS, pero se mantiene **Flask-CORS** habilitado (`CORS(app)`) para permitir también consumir la API desde otros orígenes.
 
 ---
 
