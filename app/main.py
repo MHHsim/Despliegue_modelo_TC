@@ -58,12 +58,12 @@ def predict_endpoint():
         return jsonify({"error": "Error al predecir", "detalle": str(e)}), 500
 
 # ENDPOINT PARA DEMO DE REDESPLIEGUE EN DIRECTO v descomentar aquí v
-#@app.route("/retrain", methods=["GET"])
-#def retrain_endpoint():
-#    return jsonify({
-#        "status": "Éxito",
-#        "message": "Redespliegue en directo completado y modelo actualizado."
-#    })
+@app.route("/retrain", methods=["GET"])
+def retrain_endpoint():
+    return jsonify({
+        "status": "Éxito",
+        "message": "Redespliegue en directo completado y modelo actualizado."
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
